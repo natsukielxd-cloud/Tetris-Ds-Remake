@@ -1,4 +1,4 @@
-import json, os, time, webbrowser
+import json, os, time, webbrowser, subprocess
 from datetime import datetime
 
 DATA_FILE = os.path.join(os.path.dirname(__file__), "blog-posts.json")
@@ -54,6 +54,8 @@ def new_post():
     })
     save(posts)
     print(f"OK Post guardado! ({len(posts)} total)")
+    if input("Subir a GitHub ahora? (s/n): ").strip().lower() == "s":
+        git_push(f"Nuevo post: {title}")
 
 def list_posts():
     posts = load()
@@ -81,8 +83,22 @@ def delete_post():
             removed = posts.pop(idx)
             save(posts)
             print(f"Borrado: {removed['title']}")
+            if input("Subir cambios a GitHub? (s/n): ").strip().lower() == "s":
+                git_push(f"Post eliminado: {removed['title']}")
     except:
         pass
+
+def git_push(msg):
+    base = os.path.dirname(__file__)
+    try:
+        subprocess.run(["git", "add", "website/posts.js"], cwd=base, check=True, capture_output=True)
+        subprocess.run(["git", "commit", "-m", msg], cwd=base, check=True, capture_output=True)
+        subprocess.run(["git", "push"], cwd=base, check=True, capture_output=True)
+        print("OK Subido a GitHub! La pagina se actualiza en 1-2 min.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error de git: {e.stderr.decode() if e.stderr else 'desconocido'}")
+    except FileNotFoundError:
+        print("Error: git no instalado o no en PATH")
 
 def open_admin():
     url = "https://natsukielxd-cloud.github.io/Tetris-Ds-Remake/website/admin.html"
@@ -98,6 +114,7 @@ def main():
         print("  new      - Nuevo post/evento/aviso")
         print("  list     - Listar posts")
         print("  del      - Borrar post")
+        print("  push     - Subir cambios a GitHub manual")
         print("  web      - Abrir admin.html oculto")
         print("  quit     - Salir")
         cmd = input("> ").strip().lower()
@@ -109,6 +126,8 @@ def main():
             list_posts()
         elif cmd == "del":
             delete_post()
+        elif cmd == "push":
+            git_push("Update posts.js desde admin")
         elif cmd == "web":
             open_admin()
         else:
