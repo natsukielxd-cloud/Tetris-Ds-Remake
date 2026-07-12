@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tetris DS Demake</title>
+<link rel="icon" href="https://cdn.jsdelivr.net/gh/nattyelxdyt/tetris-ds-demake@main/icono.ico" type="image/x-icon">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#0d0d12;color:#ddd;line-height:1.6}
+a{color:#0cf;text-decoration:none}
+a:hover{text-decoration:underline}
+header{background:linear-gradient(135deg,#0a0a12 0%,#1a1a2e 100%);padding:40px 20px;text-align:center;border-bottom:2px solid #0cf}
+header h1{font-size:2.5em;color:#0cf;text-shadow:0 0 20px rgba(0,204,255,.3);margin-bottom:8px}
+header p{color:#888;font-size:1.1em}
+.download-btn{display:inline-block;margin:25px 0 10px;padding:16px 48px;background:#0cf;color:#111;font-size:1.2em;font-weight:bold;border-radius:8px;transition:.2s;text-decoration:none}
+.download-btn:hover{background:#0ef;transform:scale(1.05);text-decoration:none}
+.badges{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-top:10px}
+.badge{background:#1a1a22;border:1px solid #333;border-radius:6px;padding:8px 16px;font-size:.85em;color:#aaa}
+nav{background:#12121a;padding:12px 0;text-align:center;border-bottom:1px solid #222;position:sticky;top:0;z-index:100}
+nav a{color:#aaa;margin:0 20px;font-size:.95em;transition:.2s;text-decoration:none}
+nav a:hover{color:#0cf;text-decoration:none}
+.container{max-width:900px;margin:auto;padding:20px}
+section{margin:40px 0}
+h2{color:#0cf;font-size:1.8em;margin-bottom:20px;padding-bottom:6px;border-bottom:1px solid #222}
+h3{color:#eee;font-size:1.2em;margin:20px 0 10px}
+.card{background:#15151e;border:1px solid #222;border-radius:8px;padding:20px;margin-bottom:16px}
+.card h3{color:#fc0;margin-top:0}
+.tag{display:inline-block;background:#1a2a3a;color:#0cf;font-size:.75em;padding:2px 8px;border-radius:4px;margin-right:6px}
+.tag.green{background:#1a2a1a;color:#5f5}
+.tag.red{background:#2a1a1a;color:#f55}
+ul{list-style:none;padding:0}
+li{padding:8px 0;border-bottom:1px solid #1a1a22;color:#bbb}
+li:last-child{border:none}
+.post-date{color:#666;font-size:.85em}
+footer{text-align:center;padding:30px;color:#555;border-top:1px solid #222;margin-top:60px;font-size:.9em}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.feature{background:#15151e;border:1px solid #222;border-radius:8px;padding:20px;text-align:center}
+.feature h3{color:#0cf;margin-bottom:8px;font-size:1.1em}
+.feature p{color:#999;font-size:.9em}
+.screenshots{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.screenshots img{width:100%;border-radius:6px;border:1px solid #222}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>TETRIS DS DEMAKE</h1>
+  <p>A fan-made tribute to the classic Tetris DS — for PC with full multiplayer, custom music, profiles, and more.</p>
+  <a class="download-btn" href="#">⬇ DOWNLOAD</a>
+  <div class="badges">
+    <span class="badge">Version 1.0</span>
+    <span class="badge">Python / Pygame</span>
+    <span class="badge">Windows</span>
+    <span class="badge">LAN / Online</span>
+  </div>
+</header>
+
+<nav>
+  <a href="#about">About</a>
+  <a href="#features">Features</a>
+  <a href="#screenshots">Screenshots</a>
+  <a href="#devlog">Devlog</a>
+  <a href="#download">Download</a>
+</nav>
+
+<div class="container">
+
+<section id="about">
+  <h2>About</h2>
+  <div class="card">
+    <p>Tetris DS Demake is a full-featured Tetris game inspired by the Nintendo DS classic. Built in Python with pygame, it recreates the authentic level progression, music system, and visual style of the original while adding modern features like rebindable controls, controller support, LAN multiplayer, and a complete profile system.</p>
+    <p style="margin-top:10px;color:#888">Created with love by <a href="#">Nattyelxdyt</a>.</p>
+  </div>
+</section>
+
+<section id="features">
+  <h2>Features</h2>
+  <div class="features">
+    <div class="feature"><h3>🎮 Classic Tetris</h3><p>Full SRS wall kicks, lock delay, ghost piece, hold, and next preview. 29 levels with authentic speed curve.</p></div>
+    <div class="feature"><h3>🌙 9 Visual Styles</h3><p>Each level range has its own background, music, and color scheme — from Mario Tetris to Duck Hunt to Ancient Tetris.</p></div>
+    <div class="feature"><h3>🎵 Custom Music</h3><p>Drop in your own BGM files, assign them by keyword to styles, or let the game generate procedural tracks.</p></div>
+    <div class="feature"><h3>📡 Multiplayer</h3><p>LAN discovery, direct IP, playit.gg tunneling, and headless server support. Battle friends with garbage mechanics.</p></div>
+    <div class="feature"><h3>🎮 Controller Support</h3><p>Full Xbox controller support with rebindable buttons, D-pad, analog stick, and auto-repeat DAS.</p></div>
+    <div class="feature"><h3>🖼 Customization</h3><p>Background images, cat photos (Flora/Natsuki), custom music folders, and profiles with stats tracking.</p></div>
+  </div>
+</section>
+
+<section id="screenshots">
+  <h2>Screenshots</h2>
+  <div class="screenshots">
+    <img src="https://via.placeholder.com/400x225/15151e/0cf?text=Screenshot+1" alt="Gameplay">
+    <img src="https://via.placeholder.com/400x225/15151e/0cf?text=Screenshot+2" alt="Title Screen">
+    <img src="https://via.placeholder.com/400x225/15151e/0cf?text=Screenshot+3" alt="Multiplayer Lobby">
+  </div>
+  <p style="color:#555;font-size:.85em;margin-top:8px">(Add actual screenshots in the /screenshots folder)</p>
+</section>
+
+<section id="devlog">
+  <h2>Devlog</h2>
+
+  <div class="card">
+    <h3>v1.0 — Full Release</h3>
+    <span class="tag green">Released</span>
+    <span class="post-date">July 2026</span>
+    <p style="margin-top:10px">The game is complete with all core features, multiplayer, customization, and a headless server for Android (Termux). Check the <a href="https://github.com/nattyelxdyt/tetris-ds-demake" target="_blank">GitHub repo</a> for the full source.</p>
+  </div>
+
+  <div class="card">
+    <h3>Headless Server</h3>
+    <span class="tag green">Done</span>
+    <span class="post-date">July 2026</span>
+    <p style="margin-top:10px">The <code>gameserver.py</code> can run on any device with Python — including Android via Termux. Host the full game from your phone with web control panel, chat, and status monitoring.</p>
+  </div>
+
+  <div class="card">
+    <h3>Discord Rich Presence</h3>
+    <span class="tag">Optional</span>
+    <span class="post-date">July 2026</span>
+    <p style="margin-top:10px">Shows your Tetris DS Demake activity on your Discord profile — including whether you're in menus, playing solo, in a lobby, or in a battle.</p>
+  </div>
+
+  <div class="card">
+    <h3>playit.gg Tunneling</h3>
+    <span class="tag">Docker</span>
+    <span class="post-date">July 2026</span>
+    <p style="margin-top:10px">Auto-configures and manages a playit.gg tunnel via docker-compose so you can play with friends over the internet without port forwarding.</p>
+  </div>
+</section>
+
+<section id="download">
+  <h2>Download</h2>
+  <div class="card" style="text-align:center">
+    <p style="margin-bottom:16px">Get the latest version for Windows. Python source is also available.</p>
+    <a class="download-btn" href="#">⬇ Download Tetris DS Demake 1.0</a>
+    <p style="margin-top:12px;color:#666;font-size:.85em">Requires Python 3.12+ and pygame 2.6.1 to run from source.</p>
+    <p style="margin-top:6px"><a href="https://github.com/nattyelxdyt/tetris-ds-demake" target="_blank">View source on GitHub</a></p>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <p>Tetris DS Demake — Not affiliated with Nintendo or The Tetris Company.</p>
+  <p style="margin-top:4px">Built with Python & pygame. Font: Consolas.</p>
+</footer>
+
+</body>
+</html>
