@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin — Tetris DS Demake</title>
+<link rel="icon" href="icono.ico">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#1a0d12;color:#f0d0d8;padding:40px 20px;text-align:center}
+h1{color:#f06292;margin-bottom:30px}
+.card{background:#1f1018;border:1px solid #331a22;border-radius:10px;padding:30px;max-width:700px;margin:auto;text-align:left}
+label{color:#d8a0b0;display:block;margin:15px 0 5px;font-size:.9em}
+input,select,textarea{width:100%;padding:10px;background:#2a1520;border:1px solid #552a3a;border-radius:6px;color:#f0d0d8;font-size:1em}
+textarea{min-height:180px;resize:vertical;font-family:inherit}
+button{padding:10px 30px;background:#f06292;color:#fff;border:none;border-radius:6px;font-size:1em;cursor:pointer;margin:10px 10px 0 0}
+button:hover{background:#f48fb1}
+button.green{background:#66bb6a}
+button.green:hover{background:#81c784}
+button.red{background:#ef5350}
+button.red:hover{background:#e57373}
+.hidden{display:none}
+.error{color:#ef9a9a;margin-top:10px}
+.success{color:#a5d6a7;margin-top:10px}
+.loading{color:#a06070;margin-top:10px}
+.post-item{background:#1a0d12;border:1px solid #331a22;border-radius:6px;padding:12px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.post-item .info{flex:1}
+.post-item .title{color:#f8b0c8}
+.post-item .meta{color:#a06070;font-size:.8em}
+.post-item .del{color:#ef9a9a;cursor:pointer;padding:4px 10px;border:1px solid #552a3a;border-radius:4px;font-size:.8em}
+.post-item .del:hover{background:#2a1a1a}
+.tab-bar{display:flex;gap:0;margin-bottom:20px;border-bottom:1px solid #331a22}
+.tab{flex:1;padding:10px;cursor:pointer;background:#1a0d12;text-align:center;color:#a06070;border:none;border-radius:0;margin:0}
+.tab.active{color:#f06292;border-bottom:2px solid #f06292;background:none}
+.tab:hover{color:#f48fb1}
+</style>
+</head>
+<body>
+<h1>Panel Admin — Tetris DS Demake</h1>
+
+<div class="card" id="login-card">
+  <h2 style="color:#f48fb1;margin-bottom:15px;font-size:1.2em;text-align:center">Acceso restringido</h2>
+  <label>Contraseña</label>
+  <input type="password" id="pass-input" placeholder="Contraseña" autocomplete="off">
+  <button onclick="checkPass()">Entrar</button>
+  <div id="pass-error" class="error hidden">Contraseña incorrecta</div>
+</div>
+
+<div id="main-panel" class="hidden">
+  <div class="card" style="margin-bottom:20px">
+    <label>Token de GitHub (Personal Access Token)</label>
+    <input type="password" id="token-input" placeholder="ghp_...">
+    <button onclick="saveToken()" class="green">Guardar token</button>
+    <button onclick="testToken()">Probar token</button>
+    <div id="token-status" class="loading hidden"></div>
+  </div>
+
+  <div class="card">
+    <div class="tab-bar">
+      <button class="tab active" onclick="switchTab('posts',this)">Posts</button>
+      <button class="tab" onclick="switchTab('editor',this)">Nuevo post</button>
+      <button class="tab" onclick="switchTab('files',this)">Archivos</button>
+    </div>
+
+    <div id="tab-posts">
+      <h2 style="color:#f06292;font-size:1.1em;margin-bottom:15px">Posts existentes</h2>
+      <div id="posts-container"><p class="loading">Cargando...</p></div>
+    </div>
+
+    <div id="tab-editor" class="hidden">
+      <h2 style="color:#f06292;font-size:1.1em;margin-bottom:15px">Nuevo post</h2>
+      <label>Título</label>
+      <input type="text" id="post-title">
+      <label>Fecha</label>
+      <input type="text" id="post-date" placeholder="YYYY-MM-DD">
+      <label>Tipo</label>
+      <select id="post-type">
+        <option value="post">Post</option>
+        <option value="update">Update</option>
+        <option value="event">Evento</option>
+        <option value="announce">Aviso</option>
+      </select>
+      <label>Contenido</label>
+      <textarea id="post-content" placeholder="Escribí acá..."></textarea>
+      <button onclick="previewPost()">Vista previa</button>
+      <button onclick="publishPost()" class="green">Publicar a GitHub</button>
+      <div id="preview" class="hidden" style="margin-top:20px;background:#1a0d12;padding:15px;border-radius:6px;border:1px solid #331a22">
+        <h3 style="color:#f8b0c8" id="preview-title"></h3>
+        <span class="post-item .meta" style="color:#a06070;font-size:.85em" id="preview-date"></span>
+        <div style="margin-top:10px;color:#d8a0b0" id="preview-content"></div>
+      </div>
+      <div id="publish-status" class="hidden"></div>
+    </div>
+
+    <div id="tab-files" class="hidden">
+      <h2 style="color:#f06292;font-size:1.1em;margin-bottom:15px">Editar archivos del sitio</h2>
+      <label>Archivo</label>
+      <select id="file-select" onchange="loadFile()">
+        <option value="index.html">index.html</option>
+        <option value="posts.js">posts.js</option>
+        <option value="style.css">style.css</option>
+      </select>
+      <button onclick="loadFile()" style="margin-top:0">Cargar</button>
+      <label style="margin-top:10px">Contenido</label>
+      <textarea id="file-content" style="font-family:monospace;min-height:300px"></textarea>
+      <button onclick="saveFile()" class="green">Guardar cambios a GitHub</button>
+      <div id="file-status" class="hidden"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const REPO = 'natsukielxd-cloud/Tetris-Ds-Remake';
+const BRANCH = 'main';
+const FILE_PATH = 'website/posts.js';
+let POSTS = [];
+let TOKEN = localStorage.getItem('gh_token') || '';
+
+function checkPass(){
+  const p = document.getElementById('pass-input').value;
+  if(p === 'flora2024'){
+    document.getElementById('login-card').classList.add('hidden');
+    document.getElementById('main-panel').classList.remove('hidden');
+    if(TOKEN) testToken();
+  } else {
+    document.getElementById('pass-error').classList.remove('hidden');
+  }
+}
+
+function saveToken(){
+  TOKEN = document.getElementById('token-input').value.trim();
+  localStorage.setItem('gh_token', TOKEN);
+  document.getElementById('token-status').textContent = 'Token guardado';
+  document.getElementById('token-status').className = 'success';
+  testToken();
+}
+
+async function ghFetch(method, path, body){
+  const opts = {method, headers:{Authorization:'Bearer '+TOKEN,Accept:'application/vnd.github.v3+json'}};
+  if(body) opts.body = JSON.stringify(body);
+  const r = await fetch('https://api.github.com/repos/'+REPO+path, opts);
+  const data = await r.json();
+  if(!r.ok) throw new Error(data.message || 'Error '+r.status);
+  return data;
+}
+
+async function testToken(){
+  const s = document.getElementById('token-status');
+  s.className = 'loading';
+  s.textContent = 'Probando token...';
+  try{
+    const data = await ghFetch('GET','');
+    s.textContent = 'OK! Token valido - '+(data.full_name||'');
+    s.className = 'success';
+    loadPostsFromGitHub();
+  }catch(e){
+    s.textContent = 'Error: '+e.message;
+    s.className = 'error';
+  }
+}
+
+async function loadPostsFromGitHub(){
+  try{
+    const data = await ghFetch('GET','/contents/'+FILE_PATH+'?ref='+BRANCH);
+    const content = atob(data.content.replace(/\n/g,''));
+    eval(content);
+    if(typeof POSTS !== 'undefined') renderPostList();
+    document.getElementById('token-status').textContent = 'Posts cargados: '+POSTS.length;
+    document.getElementById('token-status').className = 'success';
+  }catch(e){
+    document.getElementById('posts-container').innerHTML = '<p class="error">Error cargando posts: '+e.message+'</p>';
+  }
+}
+
+function renderPostList(){
+  const c = document.getElementById('posts-container');
+  POSTS.sort((a,b)=>b.id-a.id);
+  let html = '';
+  for(let i=0;i<POSTS.length;i++){
+    const p = POSTS[i];
+    html += '<div class="post-item"><div class="info"><div class="title">'+p.title+'</div><div class="meta">'+p.date+' - '+p.type+'</div></div><span class="del" onclick="deletePost('+i+')">Eliminar</span></div>';
+  }
+  c.innerHTML = html || '<p style="color:#a06070">No hay posts.</p>';
+}
+
+async function deletePost(idx){
+  if(!confirm('Eliminar este post?')) return;
+  POSTS.splice(idx,1);
+  await commitPosts('Post eliminado');
+  renderPostList();
+}
+
+async function commitPosts(msg){
+  try{
+    const current = await ghFetch('GET','/contents/'+FILE_PATH+'?ref='+BRANCH);
+    const js = 'const POSTS = ' + JSON.stringify(POSTS, null, 2) + ';';
+    await ghFetch('PUT','/contents/'+FILE_PATH,{
+      message: msg || 'Update posts.js',
+      content: btoa(unescape(encodeURIComponent(js))),
+      sha: current.sha,
+      branch: BRANCH
+    });
+  }catch(e){
+    throw new Error('Error al guardar: '+e.message);
+  }
+}
+
+function previewPost(){
+  const title = document.getElementById('post-title').value;
+  const date = document.getElementById('post-date').value;
+  const type = document.getElementById('post-type').value;
+  const content = document.getElementById('post-content').value;
+  const tags = {post:'[Post]',event:'[Evento]',announce:'[Aviso]',update:'[Update]'};
+  document.getElementById('preview-title').textContent = (tags[type]||'[?]')+' '+title;
+  document.getElementById('preview-date').textContent = date;
+  document.getElementById('preview-content').innerHTML = content.replace(/\n/g,'<br>');
+  document.getElementById('preview').classList.remove('hidden');
+}
+
+async function publishPost(){
+  const title = document.getElementById('post-title').value;
+  const date = document.getElementById('post-date').value;
+  const type = document.getElementById('post-type').value;
+  const content = document.getElementById('post-content').value;
+  if(!title||!date||!content){alert('Completá todos los campos');return}
+  const s = document.getElementById('publish-status');
+  s.className = 'loading';
+  s.textContent = 'Publicando...';
+  try{
+    const maxId = POSTS.length ? Math.max(...POSTS.map(p=>p.id)) : 0;
+    POSTS.push({id:maxId+1,title,date,type,content});
+    await commitPosts('Nuevo post: '+title);
+    s.textContent = 'Publicado! La página se actualiza en 1-2 min.';
+    s.className = 'success';
+    renderPostList();
+    document.getElementById('post-title').value='';
+    document.getElementById('post-date').value='';
+    document.getElementById('post-content').value='';
+    document.getElementById('preview').classList.add('hidden');
+    switchTab('posts');
+  }catch(e){
+    s.textContent = e.message;
+    s.className = 'error';
+  }
+}
+
+function switchTab(name,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-posts').classList.add('hidden');
+  document.getElementById('tab-editor').classList.add('hidden');
+  document.getElementById('tab-files').classList.add('hidden');
+  if(btn) btn.classList.add('active');
+  else document.querySelector('.tab-bar .tab').classList.add('active');
+  document.getElementById('tab-'+name).classList.remove('hidden');
+}
+
+async function loadFile(){
+  const fname = document.getElementById('file-select').value;
+  const path = 'website/'+fname;
+  try{
+    const data = await ghFetch('GET','/contents/'+path+'?ref='+BRANCH);
+    const content = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
+    document.getElementById('file-content').value = content;
+    document.getElementById('file-content').dataset.sha = data.sha;
+    document.getElementById('file-status').textContent = 'Cargado: '+path;
+    document.getElementById('file-status').className = 'success';
+  }catch(e){
+    document.getElementById('file-status').textContent = 'Error: '+e.message;
+    document.getElementById('file-status').className = 'error';
+  }
+}
+
+async function saveFile(){
+  const fname = document.getElementById('file-select').value;
+  const path = 'website/'+fname;
+  const content = document.getElementById('file-content').value;
+  const sha = document.getElementById('file-content').dataset.sha;
+  const s = document.getElementById('file-status');
+  s.className = 'loading';
+  s.textContent = 'Guardando...';
+  try{
+    await ghFetch('PUT','/contents/'+path,{
+      message: 'Update '+fname+' desde admin panel',
+      content: btoa(unescape(encodeURIComponent(content))),
+      sha: sha,
+      branch: BRANCH
+    });
+    s.textContent = 'Guardado! La página se actualiza en 1-2 min.';
+    s.className = 'success';
+  }catch(e){
+    s.textContent = 'Error: '+e.message;
+    s.className = 'error';
+  }
+}
+
+document.getElementById('post-date').value = new Date().toISOString().split('T')[0];
+if(TOKEN){document.getElementById('token-input').value=TOKEN}
+</script>
+</body>
+</html>
